@@ -52,6 +52,17 @@ function App() {
         <h1 className="text-3xl font-bold underline">
           Wordle Game
         </h1>
+        <p>Status: {status}</p>
+        <p>Current Word: {currentWord}</p>
+        <p>Current Guess: {currentGuess}</p>
+        <p>History Guesses:</p>
+        {
+          historyGuess.map((word, index) =>{
+            return (
+              <p key={index} >{word}</p>
+            );
+          })
+        }
         
       </div>
     </>
