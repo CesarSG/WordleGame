@@ -20,6 +20,32 @@ function App() {
     selectWord()
   }, [])
 
+  useEffect(() => {
+
+    const handleGlobalKeyDown = (event) => { 
+
+      if(status === "playing"){
+        if (event.key === 'Backspace') {
+          setCurrentGuess(prev => prev.slice(0, -1))
+        }
+        if (event.key === 'Enter' && currentGuess.length > (WORD_LENGTH - 1)) {
+          setHistoryGuess([...historyGuess, currentGuess])
+          setCurrentGuess('')
+        }
+        if (event.key.length === 1 && USABLE_CHARS.test(event.key) && currentGuess.length < WORD_LENGTH) {
+          setCurrentGuess(prev => prev + event.key)
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleGlobalKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleGlobalKeyDown)
+    }
+    
+  }, [currentGuess, status])
+
   return (
     <>
       <div>
