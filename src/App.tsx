@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Board from './components/Board.tsx'
 import './App.css'
 
 const WORDS = ['apple', 'grape', 'peach', 'mango', 'berry']
@@ -49,22 +50,22 @@ function App() {
 
   return (
     <>
-      <div>
-        <h1 className="text-3xl font-bold underline">
-          Wordle Game
-        </h1>
-        <p>Status: {status}</p>
-        <p>Current Word: {currentWord}</p>
-        <p>Current Guess: {currentGuess}</p>
-        <p>History Guesses:</p>
-        {
-          historyGuess.map((word, index) =>{
-            return (
-              <p key={index} >{word}</p>
-            );
-          })
-        }
-        
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 gap-4">
+          <div>
+            <h1 className="text-3xl font-bold underline">
+              Wordle Game
+            </h1>
+            <p>Status: {status}</p>
+          </div>
+          <div>
+            <Board  
+              currentWord={currentWord}
+              currentGuess={currentGuess}
+              historyGuess={historyGuess}
+            />
+          </div>
+        </div>
       </div>
     </>
   )
