@@ -4,6 +4,7 @@ import './App.css'
 const WORDS = ['apple', 'grape', 'peach', 'mango', 'berry']
 const MAX_WORDS = 5
 const WORD_LENGTH = 5
+const USABLE_CHARS = /[a-zA-Z]/
 
 function App() {
 
@@ -24,7 +25,7 @@ function App() {
 
     const handleGlobalKeyDown = (event) => { 
 
-      if(status === "playing"){
+      if(status === "playing" && historyGuess.length < MAX_WORDS) {
         if (event.key === 'Backspace') {
           setCurrentGuess(prev => prev.slice(0, -1))
         }
