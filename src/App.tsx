@@ -23,9 +23,28 @@ function App() {
 
   function evaluateWord(word: string){
 
-    const result: LetterResult[] = word.split('').map((letter, index) => {
-      return evaluateLetter(letter, index)
+    let result: LetterResult[] = [];
+    let answer: (string | null)[] = currentWord.split('')
+
+    for (let i=0; i < WORD_LENGTH; i++){
+      result.push({ "position": i, "letter": word[i], "status": "absent" })
+    }
+
+    result.forEach((value, index) => {
+      if(value.letter === currentWord.at(index)){
+        answer[index] = null;
+        value.status = "correct"
+      }
     })
+
+    result.forEach((value) => {
+      if(value.status === "absent" && answer.indexOf(value.letter) !== -1){
+        console.log(answer) 
+        const index = answer.indexOf(value.letter);
+        answer[index] = null;
+        value.status = "present"
+      }
+    });
 
     if(word === currentWord){
       setStatus('win');
@@ -34,19 +53,6 @@ function App() {
 
     setHistoryGuess([...historyGuess, result])
     setCurrentGuess('')
-  }
-
-  function evaluateLetter(letter: string, position: number) {
-
-    let status: LetterResult['status'] = 'absent'
-
-    if(currentWord.at(position) == letter){
-      status = "correct"
-    } else if(currentWord.includes(letter)){
-      status = "present"
-    } 
-
-    return { "position": position, "letter": letter, "status": status }
   }
 
   function resetGame(){
