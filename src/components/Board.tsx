@@ -1,26 +1,43 @@
-
-
+import type { GameStatus } from '../types'
 
 interface BoardProps {
-  currentWord: string;
-  currentGuess: string;
-  historyGuess: string[];
+    currentGuess: string;
+    historyGuess: string[];
+    MAX_WORDS: number;
+    WORD_LENGTH: number;
+    status: GameStatus;
 }
 
-export default function Board({ currentWord, currentGuess, historyGuess }: BoardProps) {
+export default function Board({ currentGuess, historyGuess, MAX_WORDS, WORD_LENGTH, status }: BoardProps) {
     
-  return (
-    <div>
-        <p>Current Word: {currentWord}</p>
-        <p>Current Guess: {currentGuess}</p>
-        <p>History Guesses:</p>
-        {
-          historyGuess.map((word, index) =>{
-            return (
-              <p key={index} >{word}</p>
-            );
-          })
-        }
-    </div>
-  )
+    return (
+        <div>
+            <div className="my-5">
+            {
+                Array.from({ length: MAX_WORDS }).map((_, x) => {
+                    return(
+                        <div key={x} className="flex gap-2 justify-center">
+                            {
+                                Array.from({ length: WORD_LENGTH }).map((_, y) => {
+                                    const isActiveRow = x === historyGuess.length && status === 'playing';
+                                    const isPastRow = x < historyGuess.length;
+                                    return(
+                                        <div key={y} className={`w-15 h-15 mt-2 border-2 flex text-lg items-center justify-center ${isActiveRow ? 'bg-gray-100' : isPastRow ? 'bg-gray-100 border-gray-100' : 'bg-gray-400 border-gray-400'}`}>
+                                            { historyGuess[x] ? historyGuess[x][y] : isActiveRow ? currentGuess[y] : '' }
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                    )
+                })
+            }   
+            </div>  
+
+            {
+                (MAX_WORDS - historyGuess.length > 0 && status === 'playing') && <p className='text-center'>You have {MAX_WORDS - historyGuess.length} guesses left</p>
+            }   
+
+        </div>
+    )
 }
