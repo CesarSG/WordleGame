@@ -1,21 +1,20 @@
 import { useState, useEffect } from 'react'
+import type { GameStatus, LetterResult } from './types'
 import Board from './components/Board.tsx'
 import Keyboard from './components/Keyboard.tsx'
 import './App.css'
 
-const WORDS = ['apple', 'grape', 'peach', 'mango', 'berry']
+const WORDS = ['APPLE', 'GRAPE', 'MANGO', 'PEACH', 'BERRY', 'LEMON', 'CHERRY', 'PEARL', 'PLUMB', 'PRUNE']
 const MAX_WORDS = 5
 const WORD_LENGTH = 5
 const USABLE_CHARS = /[a-zA-Z]/
-
-import type { GameStatus } from './types'
 
 
 function App() {
 
   const [currentWord, setCurrentWord] = useState('');
   const [currentGuess, setCurrentGuess] = useState('');
-  const [historyGuess, setHistoryGuess] = useState<string[]>([]);
+  const [historyGuess, setHistoryGuess] = useState<LetterResult[][]>([]);
   const [status, setStatus] = useState<GameStatus>('playing');
 
   function selectWord(){
@@ -24,13 +23,37 @@ function App() {
 
   function evaluateWord(word: string){
 
+    const result: LetterResult[] = word.split('').map((letter, index) => {
+      return evaluateLetter(letter, index)
+    })
+
     if(word === currentWord){
       setStatus('win');
       alert("You have win!");
     } 
 
-    setHistoryGuess([...historyGuess, currentGuess])
+    setHistoryGuess([...historyGuess, result])
     setCurrentGuess('')
+  }
+
+  function evaluateLetter(letter: string, position: number) {
+
+    let status: LetterResult['status'] = 'absent'
+
+    if(currentWord.at(position) == letter){
+      status = "correct"
+    } else if(currentWord.includes(letter)){
+      status = "present"
+    } 
+
+    return { "position": position, "letter": letter, "status": status }
+  }
+
+  function resetGame(){
+    setCurrentGuess('');
+    setHistoryGuess([]);
+    setStatus('playing');
+    selectWord();
   }
 
   useEffect(() =>{
@@ -49,7 +72,7 @@ function App() {
           evaluateWord(currentGuess)
         }
         if (event.key.length === 1 && USABLE_CHARS.test(event.key) && currentGuess.length < WORD_LENGTH) {
-          setCurrentGuess(prev => prev + event.key)
+          setCurrentGuess(prev => prev + event.key.toUpperCase())
         }
       }
     };
@@ -65,7 +88,8 @@ function App() {
   useEffect(() => {
 
     if(historyGuess.length == MAX_WORDS){
-      if (historyGuess[historyGuess.length - 1] !== currentWord){
+      const lastGuess = historyGuess[historyGuess.length - 1].map(lr => lr.letter).join('');
+      if (lastGuess !== currentWord){
         setStatus('lost');
         alert("You have lost");
       }
@@ -89,7 +113,7 @@ function App() {
               MAX_WORDS={MAX_WORDS}
               WORD_LENGTH={WORD_LENGTH}
               status={status}
-          />  
+          /> 
           <Keyboard 
 
           />
