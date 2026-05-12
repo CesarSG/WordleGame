@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Board from './components/Board.tsx'
+import Keyboard from './components/Keyboard.tsx'
 import './App.css'
 
 const WORDS = ['apple', 'grape', 'peach', 'mango', 'berry']
@@ -28,6 +29,7 @@ function App() {
       alert("You have win!");
     } 
 
+    setHistoryGuess([...historyGuess, currentGuess])
     setCurrentGuess('')
   }
 
@@ -37,14 +39,13 @@ function App() {
 
   useEffect(() => {
 
-    const handleGlobalKeyDown = (event) => { 
+    const handleGlobalKeyDown = (event: any) => { 
 
       if(status === "playing" && historyGuess.length < MAX_WORDS) {
         if (event.key === 'Backspace') {
           setCurrentGuess(prev => prev.slice(0, -1))
         }
         if (event.key === 'Enter' && currentGuess.length > (WORD_LENGTH - 1)) {
-          setHistoryGuess([...historyGuess, currentGuess])
           evaluateWord(currentGuess)
         }
         if (event.key.length === 1 && USABLE_CHARS.test(event.key) && currentGuess.length < WORD_LENGTH) {
@@ -74,7 +75,7 @@ function App() {
 
   return (
     <>
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto">
         <div className="grid grid-cols-1 gap-4">
           <div>
             <h1 className="text-3xl font-bold underline text-center">
@@ -82,15 +83,16 @@ function App() {
             </h1>
             <p className="text-center">Status: {status} / Word: {currentWord}</p>
           </div>
-          <div>
-            <Board  
+          <Board  
               currentGuess={currentGuess}
               historyGuess={historyGuess}
               MAX_WORDS={MAX_WORDS}
               WORD_LENGTH={WORD_LENGTH}
               status={status}
-            />
-          </div>
+          />  
+          <Keyboard 
+
+          />
         </div>
       </div>
     </>
