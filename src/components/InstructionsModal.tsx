@@ -61,8 +61,7 @@ export default function InstructionsModal({
               Each guess must be a <strong>5-letter word</strong>.
             </li>
             <li>
-              Press <strong>↵</strong>{" "}
-              <span style={{ color: "var(--text-secondary)" }}>(Enter)</span> to
+              Press <strong>ENTER</strong> to
               submit your guess.
             </li>
             <li>
