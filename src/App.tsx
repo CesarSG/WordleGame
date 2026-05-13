@@ -174,10 +174,9 @@ function App() {
       <div className="container mx-auto">
         <div className="grid grid-cols-1 gap-4">
           <div>
-            <h1 className="text-3xl font-bold underline text-center">
+            <h1 className="text-3xl font-bold text-center mt-5">
               Wordle Game
             </h1>
-            <p className="text-center">Status: {status} / Word: {currentWord}</p>
           </div>
           <Board  
               currentGuess={currentGuess}
