@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import type { GameStatus, LetterResult } from './types'
 import { Toaster, toast } from 'sonner'
+import confetti from "@hiseb/confetti";
 import Board from './components/Board.tsx'
 import Keyboard from './components/Keyboard.tsx'
 import './App.css'
@@ -71,6 +72,13 @@ function App() {
 
     if(word === currentWord){
       setStatus('win');
+      confetti({
+          position: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
+          count: 200,
+          size: 1,
+          velocity: 300,
+          fade: false,
+      });
       const attempts = historyGuess.length + 1;
       const labels = ['Genius!', 'Magnificent!', 'Impressive!', 'Splendid!', 'Great!'];
       const label = labels[attempts - 1] ?? 'Nice!';
