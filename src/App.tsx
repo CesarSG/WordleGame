@@ -40,6 +40,14 @@ function App() {
   const [historyGuess, setHistoryGuess] = useState<LetterResult[][]>([]);
   const [status, setStatus] = useState<GameStatus>('playing');
 
+  const statusPriority: Record<LetterResult['status'], number> = { correct: 2, present: 1, absent: 0 };
+
+  const letterStatuses = historyGuess.flat().reduce<Record<string, LetterResult['status']>>((acc, { letter, status }) => {
+    if (!acc[letter] || statusPriority[status] > statusPriority[acc[letter]]) acc[letter] = status;
+    return acc;
+  }, {});
+  
+
   function selectWord(){
     const entry = WORDS[Math.floor(Math.random() * WORDS.length)];
     setCurrentWord(entry.word);
