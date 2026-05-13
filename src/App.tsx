@@ -186,7 +186,7 @@ function App() {
               <>
                 <span className="text-center text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Guess the word in {MAX_WORDS - historyGuess.length} attempts</span>
                 <div className="flex flex-col items-center gap-1 pb-3">
-                  <button onClick={() => { showHintToast(currentHint); dismissToasts(); }} className="bg-gray-300 text-center text-xs mx-auto px-3 py-1 rounded-lg font-medium" style={{ color: 'var(--text-secondary)' }}>{isTouchDevice ? 'Tap for a hint' : 'Click for a hint'}</button>
+                  <button onClick={() => { dismissToasts(); showHintToast(currentHint); }} className="bg-gray-300 text-center text-xs mx-auto px-3 py-1 rounded-lg font-medium" style={{ color: 'var(--text-secondary)' }}>{isTouchDevice ? 'Tap for a hint' : 'Click for a hint'}</button>
                   {!isTouchDevice && <span className="text-center text-xs" style={{ color: 'var(--text-secondary)' }}>or press Shift on your keyboard</span>}
                 </div>
               </>
