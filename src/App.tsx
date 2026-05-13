@@ -28,26 +28,36 @@ const WORDS = [
   { word: 'YACHT', hint: 'A luxurious boat used for pleasure cruising' },
   { word: 'ZEBRA', hint: 'An African animal with black and white stripes' }
 ]
-const MAX_WORDS = 5
+const MAX_WORDS = 6
 const WORD_LENGTH = 5
 const USABLE_CHARS = /[a-zA-Z]/
 
+
+function launchConfetti() {
+  confetti({
+    position: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
+    count: 200,
+    size: 1,
+    velocity: 300,
+    fade: false,
+  });
+}
 
 function App() {
 
   const [currentWord, setCurrentWord] = useState('');
   const [currentHint, setCurrentHint] = useState('');
   const [currentGuess, setCurrentGuess] = useState('');
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [historyGuess, setHistoryGuess] = useState<LetterResult[][]>([]);
   const [status, setStatus] = useState<GameStatus>('playing');
-
+  
   const statusPriority: Record<LetterResult['status'], number> = { correct: 2, present: 1, absent: 0 };
 
   const letterStatuses = historyGuess.flat().reduce<Record<string, LetterResult['status']>>((acc, { letter, status }) => {
     if (!acc[letter] || statusPriority[status] > statusPriority[acc[letter]]) acc[letter] = status;
     return acc;
   }, {});
-  
 
   function selectWord(){
     const entry = WORDS[Math.floor(Math.random() * WORDS.length)];
@@ -99,7 +109,8 @@ function App() {
   }
 
   useEffect(() =>{
-    selectWord()
+    selectWord();
+    setIsTouchDevice(window.matchMedia('(pointer: coarse)').matches);
   }, [])
 
   useEffect(() => {
@@ -150,7 +161,7 @@ function App() {
   return (
     <>
       <div className="container mx-auto">
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 gap-3">
           <div>
             <h1 className="text-3xl font-bold text-center mt-5">
               Wordle Game
@@ -181,19 +192,25 @@ function App() {
               </div>
             )
           }
+          
           {
             status === 'playing' && (
               <>
-                <p 
-                  className="text-center text-sm" style={{ color: 'var(--text-secondary)' }}>
-                    Press Shift for a hint
-                </p>
+                <span className="text-center text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Guess the word in {MAX_WORDS - historyGuess.length} attempts</span>
+                <div className="flex flex-col items-center gap-1 pb-3">
+                  <button onClick={() => { showHintToast(currentHint); dismissToasts(); }} className="bg-gray-300 text-center text-xs mx-auto px-3 py-1 rounded-lg font-medium" style={{ color: 'var(--text-secondary)' }}>{isTouchDevice ? 'Tap for a hint' : 'Click for a hint'}</button>
+                  {!isTouchDevice && <span className="text-center text-xs" style={{ color: 'var(--text-secondary)' }}>or press Shift on your keyboard</span>}
+                </div>
               </>
             )
           }
           
           <Keyboard letterStatuses={letterStatuses} />
-          <Toaster position="top-center" expand={true} duration={2000} />
+          <Toaster 
+            position="top-center" 
+            expand={true} 
+            duration={2000} 
+          />
         </div>
       </div>
     </>
