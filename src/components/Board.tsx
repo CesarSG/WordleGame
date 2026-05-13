@@ -18,7 +18,7 @@ export default function Board({ currentGuess, historyGuess, MAX_WORDS, WORD_LENG
     
     return (
         <div>
-            <div className="my-5">
+            <div>
             {
                 Array.from({ length: MAX_WORDS }).map((_, x) => {
                     return(
@@ -38,11 +38,7 @@ export default function Board({ currentGuess, historyGuess, MAX_WORDS, WORD_LENG
                     )
                 })
             }   
-            </div>  
-
-            {
-                (MAX_WORDS - historyGuess.length > 0 && status === 'playing') && <p className='text-center'>You have {MAX_WORDS - historyGuess.length} guesses left</p>
-            }   
+            </div>   
 
         </div>
     )
