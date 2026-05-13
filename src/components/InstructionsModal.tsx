@@ -141,7 +141,7 @@ export default function InstructionsModal({
           </li>
           <li>
             <kbd className="px-1.5 py-0.5 rounded bg-gray-100 border border-gray-300 font-mono text-gray-700">
-              ↵
+              ENTER
             </kbd>{" "}
             Submit guess <span className="text-gray-400">(Enter)</span>
           </li>
