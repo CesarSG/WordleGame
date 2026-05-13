@@ -7,6 +7,8 @@ import { MAX_WORDS, WORD_LENGTH, USABLE_CHARS } from './constants'
 import type { GameStatus, LetterResult } from './types'
 import Board from './components/Board.tsx'
 import Keyboard from './components/Keyboard.tsx'
+import InstructionsModal from './components/InstructionsModal.tsx'
+import faviconUrl from '/favicon.svg'
 import './App.css'
 
 function App() {
@@ -17,6 +19,7 @@ function App() {
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [historyGuess, setHistoryGuess] = useState<LetterResult[][]>([]);
   const [status, setStatus] = useState<GameStatus>('playing');
+  const [isInstructionsOpen, setIsInstructionsOpen] = useState(false);
   
   const statusPriority: Record<LetterResult['status'], number> = { correct: 2, present: 1, absent: 0 };
 
@@ -117,6 +120,7 @@ function App() {
           showTooShortToast(WORD_LENGTH)
         }
         if (event.key === 'Tab' || event.key === 'Shift') {
+          event.preventDefault();
           dismissToasts();
           showHintToast(currentHint)
         }
@@ -150,11 +154,21 @@ function App() {
     <>
       <div className="container mx-auto">
         <div className="grid grid-cols-1 gap-3">
-          <div>
-            <h1 className="text-3xl font-bold text-center mt-5">
+          <div className="relative flex items-center justify-center mt-5">
+            <h1 className="text-3xl font-bold text-center flex items-center justify-center gap-2">
+              <img src={faviconUrl} alt="" className="w-8 h-8" />
               Wordle Game
             </h1>
+            <button
+              onClick={() => setIsInstructionsOpen(true)}
+              className="absolute right-4 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 hover:brightness-90 transition-all"
+              style={{ borderColor: 'var(--text-secondary)', color: 'var(--text-secondary)' }}
+              aria-label="How to play"
+            >
+              ?
+            </button>
           </div>
+          <InstructionsModal isOpen={isInstructionsOpen} onClose={() => setIsInstructionsOpen(false)} />
           <Board  
               currentGuess={currentGuess}
               historyGuess={historyGuess}
@@ -186,7 +200,7 @@ function App() {
               <>
                 <span className="text-center text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Guess the word in {MAX_WORDS - historyGuess.length} attempts</span>
                 <div className="flex flex-col items-center gap-1 pb-3">
-                  <button onClick={() => { dismissToasts(); showHintToast(currentHint); }} className="bg-gray-300 text-center text-xs mx-auto px-3 py-1 rounded-lg font-medium" style={{ color: 'var(--text-secondary)' }}>{isTouchDevice ? 'Tap for a hint' : 'Click for a hint'}</button>
+                  <button tabIndex={-1} onClick={(e) => { (e.currentTarget as HTMLButtonElement).blur(); dismissToasts(); showHintToast(currentHint); }} className="bg-gray-300 text-center text-xs mx-auto px-3 py-1 rounded-lg font-medium" style={{ color: 'var(--text-secondary)' }}>{isTouchDevice ? 'Tap for a hint' : 'Click for a hint'}</button>
                   {!isTouchDevice && <span className="text-center text-xs" style={{ color: 'var(--text-secondary)' }}>or press Shift on your keyboard</span>}
                 </div>
               </>
