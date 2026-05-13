@@ -1,73 +1,72 @@
-# React + TypeScript + Vite
+# Wordle Game
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A fully playable Wordle clone built with React 19, TypeScript, and Tailwind CSS v4. Deployed to GitHub Pages.
 
-Currently, two official plugins are available:
+**Live Demo:** https://CesarSG.github.io/WordleGame/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+![Wordle Clone](.github/assets/game.png)
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features
 
-## Expanding the ESLint configuration
+- **Game logic** — 6-guess limit, letter state tracking (correct / present / absent), and win/loss detection
+- **Color-coded feedback** — tiles and on-screen keyboard update in sync after each guess
+- **Hint system** — optional per-word hints to help players when stuck
+- **Confetti celebration** — animated confetti on a correct guess
+- **Toast notifications** — non-blocking feedback for invalid words, win, and loss states
+- **Instructions modal** — in-game help with rules and keyboard shortcuts
+- **Physical keyboard support** — type with your keyboard or use the on-screen one
+- **Responsive layout** — works on desktop and mobile
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+| Layer | Technology |
+|---|---|
+| UI framework | React 19 |
+| Language | TypeScript |
+| Styling | Tailwind CSS v4 |
+| Build tool | Vite |
+| Deployment | GitHub Pages via `gh-pages` |
+| Notifications | Sonner |
+| Confetti | @hiseb/confetti |
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Getting Started
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Other commands
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build    # Production build
+npm run preview  # Preview the production build locally
+npm run lint     # Run ESLint
+npm run deploy   # Build and deploy to GitHub Pages
 ```
+
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── Board.tsx            # Game grid and tile rendering
+│   ├── Keyboard.tsx         # On-screen keyboard with letter state sync
+│   └── InstructionsModal.tsx
+├── utils/
+│   ├── confetti.ts          # Confetti trigger helper
+│   └── toasts.tsx           # Toast notification helpers
+├── data/
+│   └── words.ts             # Word list with optional hints
+├── constants.ts             # Game configuration (word length, max guesses)
+├── types.ts                 # Shared TypeScript types
+└── App.tsx                  # Core game state and logic
+```
+
+## License
+
+[MIT](LICENSE)
