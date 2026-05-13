@@ -1,0 +1,63 @@
+:root {
+  --bg: #F9F7F2;
+
+  --correct: #34C759;
+  --present: #FFCC00;
+  --absent: #8E8E93;
+
+  --tile-empty: #FFFFFF;
+  --tile-border: #D1D1D6;
+
+  --text-primary: #1C1C1E;
+  --text-secondary: #636366;
+
+  --key-bg: #EFEFF4;
+  --key-hover: #E5E5EA;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text-primary);
+}
+
+.tile {
+  background-color: var(--tile-empty);
+  border-color: var(--tile-border);
+  color: var(--text-primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+.tile-active {
+  border-color: var(--text-primary) !important; 
+  color: var(--text-primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+.tile-correct {
+  background-color: var(--correct) !important;
+  border-color: var(--correct);
+  color: #fff;
+}
+
+.tile-present {
+  background-color: var(--present) !important;
+  border-color: var(--present);
+  color: var(--text-primary);
+}
+
+.tile-absent {
+  background-color: var(--absent) !important;
+  border-color: var(--absent);
+  color: #fff;
+}
+
+.key {
+  background-color: var(--key-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background-color 0.1s;
+}
+
+.key:hover {
+  filter: brightness(0.88);
+}
