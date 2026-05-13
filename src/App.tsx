@@ -1,47 +1,13 @@
 import { useState, useEffect } from 'react'
-import type { GameStatus, LetterResult } from './types'
 import { Toaster } from 'sonner'
 import { showWinToast, showLoseToast, showHintToast, showTooShortToast, dismissToasts } from './utils/toasts'
-import confetti from "@hiseb/confetti";
+import { launchConfetti } from './utils/confetti'
+import { WORDS } from './data/words'
+import { MAX_WORDS, WORD_LENGTH, USABLE_CHARS } from './constants'
+import type { GameStatus, LetterResult } from './types'
 import Board from './components/Board.tsx'
 import Keyboard from './components/Keyboard.tsx'
 import './App.css'
-
-const WORDS = [
-  { word: 'APPLE', hint: 'A common red or green fruit that keeps the doctor away' },
-  { word: 'GRAPE', hint: 'Small round fruit that grows in clusters on a vine' },
-  { word: 'MANGO', hint: 'A tropical fruit with orange flesh and a large pit' },
-  { word: 'PEACH', hint: 'A fuzzy-skinned fruit with a sweet, juicy center' },
-  { word: 'BERRY', hint: 'A small, round, juicy fruit — think strawberry or blueberry' },
-  { word: 'LEMON', hint: 'A sour yellow citrus fruit used in drinks and cooking' },
-  { word: 'PEARL', hint: 'A gem formed inside an oyster' },
-  { word: 'PLUMB', hint: 'Perfectly vertical, like a plumber\'s weight on a string' },
-  { word: 'PRUNE', hint: 'A dried plum, often eaten for digestive health' },
-  { word: 'QUICK', hint: 'Moving fast or doing something in a short time' },
-  { word: 'ROBIN', hint: 'A small bird with a red breast, often seen in gardens' },
-  { word: 'SNAKE', hint: 'A legless reptile that slithers on the ground' },
-  { word: 'TIGER', hint: 'A large wild cat with orange fur and black stripes' },
-  { word: 'UMBRE', hint: 'A portable shade used to protect from the sun' },
-  { word: 'VIOLE', hint: 'A small plant with purple, blue, or white flowers' },
-  { word: 'WHALE', hint: 'A large marine mammal that lives in the ocean' },
-  { word: 'XENON', hint: 'A colorless, odorless noble gas used in lighting' },
-  { word: 'YACHT', hint: 'A luxurious boat used for pleasure cruising' },
-  { word: 'ZEBRA', hint: 'An African animal with black and white stripes' }
-]
-const MAX_WORDS = 6
-const WORD_LENGTH = 5
-const USABLE_CHARS = /[a-zA-Z]/
-
-
-function launchConfetti() {
-  confetti({
-    position: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
-    count: 200,
-    size: 1,
-    velocity: 300,
-    fade: false,
-  });
-}
 
 function App() {
 
@@ -65,21 +31,20 @@ function App() {
     setCurrentHint(entry.hint);
   }
 
-  function evaluateWord(word: string){
+  function computeLetterResults(word: string, currentWord: string): LetterResult[] {
 
-    let result: LetterResult[] = [];
-    let answer: (string | null)[] = currentWord.split('')
+    const answer: (string | null)[] = currentWord.split('');
 
-    for (let i=0; i < WORD_LENGTH; i++){
-      result.push({ "position": i, "letter": word[i], "status": "absent" })
-    }
+    const result: LetterResult[] = Array.from({ length: WORD_LENGTH }, (_, i) => ({
+      position: i, letter: word[i], status: "absent"
+    }));
 
     result.forEach((value, index) => {
       if(value.letter === currentWord.at(index)){
         answer[index] = null;
         value.status = "correct"
       }
-    })
+    });
 
     result.forEach((value) => {
       if(value.status === "absent" && answer.indexOf(value.letter) !== -1){
@@ -89,15 +54,20 @@ function App() {
       }
     });
 
-    if(word === currentWord){
-      const attempts = historyGuess.length + 1;
-      setStatus('win');
-      launchConfetti();
-      showWinToast(attempts, MAX_WORDS, currentWord);
-    } 
+    return result;
+  }
 
-    setHistoryGuess([...historyGuess, result])
-    setCurrentGuess('')
+  function handleWin(attempts: number) {
+    setStatus('win');
+    launchConfetti();
+    showWinToast(attempts, MAX_WORDS, currentWord);
+  }
+
+  function submitGuess(word: string) {
+    const result = computeLetterResults(word, currentWord);
+    if (word === currentWord) handleWin(historyGuess.length + 1);
+    setHistoryGuess(prev => [...prev, result]);
+    setCurrentGuess('');
   }
 
   function resetGame(){
@@ -122,7 +92,7 @@ function App() {
           setCurrentGuess(prev => prev.slice(0, -1))
         }
         if (event.key === 'Enter' && currentGuess.length > (WORD_LENGTH - 1)) {
-          evaluateWord(currentGuess)
+          submitGuess(currentGuess)
         }
         if (event.key === 'Enter' && currentGuess.length < WORD_LENGTH) {
           dismissToasts();
