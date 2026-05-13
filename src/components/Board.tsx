@@ -11,13 +11,9 @@ interface BoardProps {
 export default function Board({ currentGuess, historyGuess, MAX_WORDS, WORD_LENGTH, status }: BoardProps) {
 
     const getCellStyle = (letterStatus: LetterResult['status']) => {
-        if(letterStatus === "correct"){
-            return "bg-green-100 border-green-100"
-        } else if(letterStatus === "present"){
-            return "bg-yellow-100 border-yellow-100"
-        } else {
-            return "bg-gray-100 border-gray-100"
-        }
+        if (letterStatus === "correct") return "tile-correct"
+        if (letterStatus === "present") return "tile-present"
+        return "tile-absent"
     }
     
     return (
@@ -32,7 +28,7 @@ export default function Board({ currentGuess, historyGuess, MAX_WORDS, WORD_LENG
                                     const isActiveRow = x === historyGuess.length && status === 'playing';
                                     const isPastRow = x < historyGuess.length;
                                     return(
-                                        <div key={y} className={`w-15 h-15 mt-2 border-2 flex text-lg items-center justify-center ${isPastRow ? getCellStyle(historyGuess[x][y].status) : ''} ${isActiveRow ? 'bg-gray-100' : !isPastRow ? 'bg-gray-400 border-gray-400' : ''}`}>
+                                        <div key={y} className={`tile w-15 h-15 mt-2 border-2 font-semibold rounded-md flex text-lg items-center justify-center ${isPastRow ? getCellStyle(historyGuess[x][y].status) : ''} ${isActiveRow ? 'tile-active' : ''}`}>
                                             { isPastRow ? historyGuess[x][y].letter : isActiveRow ? currentGuess[y] : '' }
                                         </div>
                                     )
