@@ -8,14 +8,15 @@ const STATUS_CLASS: Record<LetterResult['status'], string> = {
 
 interface KeyboardProps {
     letterStatuses: Record<string, LetterResult['status']>
+    handleButtonClick: (letter: string) => void;
 }
 
-export default function Keyboard({ letterStatuses }: KeyboardProps) {
+export default function Keyboard({ letterStatuses, handleButtonClick }: KeyboardProps) {
 
     const keys = [
         ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
         ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-        ['Enter', 'Z', 'X', 'C', 'V', 'B', 'N', 'M']
+        ['Enter', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Backspace']
     ]
 
     return (
@@ -28,9 +29,9 @@ export default function Keyboard({ letterStatuses }: KeyboardProps) {
                                 row.map((letter, indexLetter) => {
                                     const status = letterStatuses[letter]
                                     return(
-                                        <div key={indexLetter} className={`key w-15 h-15 mt-2 rounded-sm flex text-lg font-semibold items-center justify-center ${status ? STATUS_CLASS[status] : ''}`}>
-                                            {letter}
-                                        </div>
+                                        <button onClick={() => handleButtonClick(letter)} key={indexLetter} className={`key w-15 h-15 mt-2 rounded-sm flex text-lg font-semibold items-center justify-center ${status ? STATUS_CLASS[status] : ''}`}>
+                                            {letter === 'Backspace' ? '⌫' : letter === 'Enter' ? '↵' : letter}
+                                        </button>
                                     )
                                 })
                             }

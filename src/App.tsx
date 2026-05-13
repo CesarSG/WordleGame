@@ -25,6 +25,24 @@ function App() {
     return acc;
   }, {});
 
+  function handleButtonClick(letter: string) {
+    if(status !== 'playing' || historyGuess.length >= MAX_WORDS) return;
+    
+    if(USABLE_CHARS.test(letter) && currentGuess.length < WORD_LENGTH && letter.length === 1) {
+      setCurrentGuess(prev => prev + letter.toLocaleUpperCase())
+    }
+    if(letter === 'Backspace') {
+      setCurrentGuess(prev => prev.slice(0, -1))
+    }
+    if(letter.toUpperCase() === 'ENTER' && currentGuess.length < (WORD_LENGTH - 1)) {
+      dismissToasts();
+      showTooShortToast(WORD_LENGTH)
+    }
+    if(letter.toUpperCase() === 'ENTER' && currentGuess.length === WORD_LENGTH) {
+      submitGuess(currentGuess)
+    }
+  }
+
   function selectWord(){
     const entry = WORDS[Math.floor(Math.random() * WORDS.length)];
     setCurrentWord(entry.word);
@@ -175,7 +193,10 @@ function App() {
             )
           }
           
-          <Keyboard letterStatuses={letterStatuses} />
+          <Keyboard 
+            letterStatuses={letterStatuses} 
+            handleButtonClick={handleButtonClick}
+          />
           <Toaster 
             position="top-center" 
             expand={true} 
