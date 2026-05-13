@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import type { GameStatus, LetterResult } from './types'
-import { Toaster, toast } from 'sonner'
+import { Toaster } from 'sonner'
+import { showWinToast, showLoseToast, showHintToast, showTooShortToast, dismissToasts } from './utils/toasts'
 import confetti from "@hiseb/confetti";
 import Board from './components/Board.tsx'
 import Keyboard from './components/Keyboard.tsx'
@@ -79,27 +80,10 @@ function App() {
     });
 
     if(word === currentWord){
-      setStatus('win');
-      confetti({
-          position: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
-          count: 200,
-          size: 1,
-          velocity: 300,
-          fade: false,
-      });
       const attempts = historyGuess.length + 1;
-      const labels = ['Genius!', 'Magnificent!', 'Impressive!', 'Splendid!', 'Great!'];
-      const label = labels[attempts - 1] ?? 'Nice!';
-      toast.success(
-        <div className="flex flex-col gap-1 mx-2">
-          <span className="font-bold text-base">You won!</span>
-          <span className="text-sm font-semibold">{label}</span>
-          <span className="text-sm">Solved in <strong>{attempts}/{MAX_WORDS}</strong> {attempts === 1 ? 'attempt' : 'attempts'}</span>
-          <span className="text-sm">The word was <strong>{currentWord}</strong></span>
-          <span className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>Click <strong>Play Again</strong> below to start a new game</span>
-        </div>,
-        { duration: Infinity, closeButton: true, richColors: true }
-      );
+      setStatus('win');
+      launchConfetti();
+      showWinToast(attempts, MAX_WORDS, currentWord);
     } 
 
     setHistoryGuess([...historyGuess, result])
@@ -107,7 +91,7 @@ function App() {
   }
 
   function resetGame(){
-    toast.dismiss();
+    dismissToasts();
     setCurrentGuess('');
     setHistoryGuess([]);
     setStatus('playing');
@@ -130,10 +114,12 @@ function App() {
           evaluateWord(currentGuess)
         }
         if (event.key === 'Enter' && currentGuess.length < WORD_LENGTH) {
-          toast.warning(`The word must have ${WORD_LENGTH} letters`)
+          dismissToasts();
+          showTooShortToast(WORD_LENGTH)
         }
-        if (event.key === 'Shift') {
-          toast.info(`Hint: ${currentHint}`, { duration: 6000, position: 'top-right', richColors: true  })
+        if (event.key === 'Tab' || event.key === 'Shift') {
+          dismissToasts();
+          showHintToast(currentHint)
         }
         if (event.key.length === 1 && USABLE_CHARS.test(event.key) && currentGuess.length < WORD_LENGTH) {
           setCurrentGuess(prev => prev + event.key.toUpperCase())
@@ -155,15 +141,7 @@ function App() {
       const lastGuess = historyGuess[historyGuess.length - 1].map(lr => lr.letter).join('');
       if (lastGuess !== currentWord){
         setStatus('lost');
-        toast.error(
-          <div className="flex flex-col gap-1 mx-2">
-            <span className="font-bold text-base">You lost!</span>
-            <span className="text-sm font-semibold">Better luck next time!</span>
-            <span className="text-sm">You used all <strong>{MAX_WORDS}</strong> attempts</span>
-            <span className="text-sm">The word was <strong>{currentWord}</strong></span>
-          </div>,
-          { duration: 6000 }
-        );
+        showLoseToast(MAX_WORDS, currentWord);
       }
     }
 
