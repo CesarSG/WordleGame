@@ -4,7 +4,27 @@ import Board from './components/Board.tsx'
 import Keyboard from './components/Keyboard.tsx'
 import './App.css'
 
-const WORDS = ['APPLE', 'GRAPE', 'MANGO', 'PEACH', 'BERRY', 'LEMON', 'CHERRY', 'PEARL', 'PLUMB', 'PRUNE']
+const WORDS = [
+  { word: 'APPLE', hint: 'A common red or green fruit that keeps the doctor away' },
+  { word: 'GRAPE', hint: 'Small round fruit that grows in clusters on a vine' },
+  { word: 'MANGO', hint: 'A tropical fruit with orange flesh and a large pit' },
+  { word: 'PEACH', hint: 'A fuzzy-skinned fruit with a sweet, juicy center' },
+  { word: 'BERRY', hint: 'A small, round, juicy fruit — think strawberry or blueberry' },
+  { word: 'LEMON', hint: 'A sour yellow citrus fruit used in drinks and cooking' },
+  { word: 'PEARL', hint: 'A gem formed inside an oyster' },
+  { word: 'PLUMB', hint: 'Perfectly vertical, like a plumber\'s weight on a string' },
+  { word: 'PRUNE', hint: 'A dried plum, often eaten for digestive health' },
+  { word: 'QUICK', hint: 'Moving fast or doing something in a short time' },
+  { word: 'ROBIN', hint: 'A small bird with a red breast, often seen in gardens' },
+  { word: 'SNAKE', hint: 'A legless reptile that slithers on the ground' },
+  { word: 'TIGER', hint: 'A large wild cat with orange fur and black stripes' },
+  { word: 'UMBRE', hint: 'A portable shade used to protect from the sun' },
+  { word: 'VIOLE', hint: 'A small plant with purple, blue, or white flowers' },
+  { word: 'WHALE', hint: 'A large marine mammal that lives in the ocean' },
+  { word: 'XENON', hint: 'A colorless, odorless noble gas used in lighting' },
+  { word: 'YACHT', hint: 'A luxurious boat used for pleasure cruising' },
+  { word: 'ZEBRA', hint: 'An African animal with black and white stripes' }
+]
 const MAX_WORDS = 5
 const WORD_LENGTH = 5
 const USABLE_CHARS = /[a-zA-Z]/
@@ -13,12 +33,15 @@ const USABLE_CHARS = /[a-zA-Z]/
 function App() {
 
   const [currentWord, setCurrentWord] = useState('');
+  const [currentHint, setCurrentHint] = useState('');
   const [currentGuess, setCurrentGuess] = useState('');
   const [historyGuess, setHistoryGuess] = useState<LetterResult[][]>([]);
   const [status, setStatus] = useState<GameStatus>('playing');
 
   function selectWord(){
-    setCurrentWord(WORDS[Math.floor(Math.random() * WORDS.length)])
+    const entry = WORDS[Math.floor(Math.random() * WORDS.length)];
+    setCurrentWord(entry.word);
+    setCurrentHint(entry.hint);
   }
 
   function evaluateWord(word: string){
@@ -39,7 +62,6 @@ function App() {
 
     result.forEach((value) => {
       if(value.status === "absent" && answer.indexOf(value.letter) !== -1){
-        console.log(answer) 
         const index = answer.indexOf(value.letter);
         answer[index] = null;
         value.status = "present"
@@ -89,7 +111,7 @@ function App() {
       window.removeEventListener('keydown', handleGlobalKeyDown)
     }
     
-  }, [currentGuess])
+  }, [currentGuess, currentHint, status])
 
   useEffect(() => {
 
