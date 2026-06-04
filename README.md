@@ -8,6 +8,7 @@ A fully playable Wordle clone built with React 19, TypeScript, and Tailwind CSS 
 
 ---
 
+
 ## Features
 
 - **Game logic** — 6-guess limit, letter state tracking (correct / present / absent), and win/loss detection
